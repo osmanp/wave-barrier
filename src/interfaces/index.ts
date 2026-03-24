@@ -26,14 +26,7 @@ export interface PostgresBackendConfig {
 
 export type BackendConfig = RedisBackendConfig | MongoBackendConfig | PostgresBackendConfig;
 
-export type QueueType = 'bullmq' | 'agenda' | 'pg-boss';
-
-export interface BullMQQueueConfig {
-  type: 'bullmq';
-  name: string;
-  connection?: any;
-  options?: any;
-}
+export type QueueType = 'agenda';
 
 export interface AgendaQueueConfig {
   type: 'agenda';
@@ -42,14 +35,7 @@ export interface AgendaQueueConfig {
   options?: any;
 }
 
-export interface PgBossQueueConfig {
-  type: 'pg-boss';
-  name: string;
-  connectionString: string;
-  options?: any;
-}
-
-export type QueueConfig = BullMQQueueConfig | AgendaQueueConfig | PgBossQueueConfig;
+export type QueueConfig = AgendaQueueConfig;
 
 export interface RuntimeOptions {
   maxConcurrent?: number;
