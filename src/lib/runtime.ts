@@ -1,15 +1,24 @@
-import { BackendConfig, QueueConfig, RuntimeOptions } from '../interfaces';
-import { LeaderElection } from './leader-election';
-import { DistributedSemaphore } from './semaphore';
+import { EventEmitter } from 'events';
+import type { Agenda, Job } from 'agenda';
+import { ClusterConfig } from '../interfaces';
 
-export class DistributedRuntime {
-  public readonly leaderElection: LeaderElection;
-  public readonly semaphore: DistributedSemaphore;
+export class ClusterRuntime extends EventEmitter {
+  public readonly nodeId: string;
+  public readonly isLeader: boolean = false;
+  private config: ClusterConfig;
 
-  constructor(backendConfig: BackendConfig, queueConfig: QueueConfig, options?: RuntimeOptions) {
+  constructor(config: ClusterConfig) {
+    super();
+    this.config = config;
+    this.nodeId = config.nodeId;
+  }
+
+  public setLeaderDispatcher(dispatcherFn: (agenda: Agenda) => Promise<void>): void {
     // Stub implementation
-    this.leaderElection = {} as any;
-    this.semaphore = {} as any;
+  }
+
+  public processJob<T = any>(jobName: string, handler: (job: Job<T>) => Promise<void>): void {
+    // Stub implementation
   }
 
   public async start(): Promise<void> {
@@ -20,11 +29,14 @@ export class DistributedRuntime {
     // Stub implementation
   }
 
-  public onJob(handler: (job: any) => Promise<any>): void {
-    // Stub implementation
-  }
-
-  public async addJob(jobId: string, data: any, opts?: any): Promise<any> {
-    // Stub implementation
+  // Observability & Events
+  public on(event: 'promotedToLeader', listener: () => void): this;
+  public on(event: 'demotedToWorker', listener: () => void): this;
+  public on(event: 'jobStarted', listener: (jobName: string, jobId: string) => void): this;
+  public on(event: 'jobCompleted', listener: (jobName: string, jobId: string) => void): this;
+  public on(event: 'jobFailed', listener: (jobName: string, jobId: string, err: Error) => void): this;
+  public on(event: 'error', listener: (err: Error) => void): this;
+  public on(event: string | symbol, listener: (...args: any[]) => void): this {
+    return super.on(event, listener);
   }
 }

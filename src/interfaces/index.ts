@@ -1,61 +1,33 @@
-export type BackendType = 'redis' | 'mongodb' | 'postgres';
+import type { Agenda } from 'agenda';
 
-export interface RedisBackendConfig {
-  type: 'redis';
-  url?: string;
-  [key: string]: any;
+export type BackendType = 'redis' | 'mongodb' | 'postgresql';
+
+export interface StorageAdapter {
+  type: BackendType;
+
+  // Leader Election (Distributed Mutex)
+  acquireLeaderLock(ttlMs: number): Promise<boolean>;
+  renewLeaderLock(): Promise<boolean>;
+  releaseLeaderLock(): Promise<void>;
+
+  // Global Concurrency (Distributed Semaphore)
+  acquireSemaphorePermit(globalLimit: number): Promise<boolean>;
+  releaseSemaphorePermit(): Promise<void>;
 }
 
-export interface MongoBackendConfig {
-  type: 'mongodb';
-  url: string;
-  dbName?: string;
-  [key: string]: any;
-}
+export interface ClusterConfig {
+  /** Unique identifier for this instance (e.g., `worker-${process.pid}`) */
+  nodeId: string;
 
-export interface PostgresBackendConfig {
-  type: 'postgres';
-  host?: string;
-  port?: number;
-  user?: string;
-  password?: string;
-  database?: string;
-  connectionString?: string;
-  [key: string]: any;
-}
+  /** The maximum number of concurrent tasks allowed across the ENTIRE cluster */
+  globalConcurrency: number;
 
-export type BackendConfig = RedisBackendConfig | MongoBackendConfig | PostgresBackendConfig;
+  /** The backend handling locks and semaphores */
+  storage: StorageAdapter;
 
-export type QueueType = 'agenda';
+  /** The instantiated Agenda instance used for durability and retries */
+  agenda: Agenda;
 
-export interface AgendaQueueConfig {
-  type: 'agenda';
-  name: string;
-  mongoUri: string;
-  options?: any;
-}
-
-export type QueueConfig = AgendaQueueConfig;
-
-export interface RuntimeOptions {
-  maxConcurrent?: number;
-  semaphoreOptions?: {
-    semaphoreKey?: string;
-    ttl?: number;
-  };
-  leaderOptions?: {
-    nodeId?: string;
-    lockKey?: string;
-    ttl?: number;
-  };
-}
-
-export interface Backend {
-  init(): Promise<void>;
-  acquireLock(key: string, owner: string, ttl: number): Promise<boolean>;
-  extendLock(key: string, owner: string, ttl: number): Promise<boolean>;
-  releaseLock(key: string, owner: string): Promise<boolean>;
-  acquireSemaphoreSlot(semaphoreKey: string, leaseId: string, max: number, ttl: number): Promise<boolean>;
-  releaseSemaphoreSlot(semaphoreKey: string, leaseId: string): Promise<boolean>;
-  renewSemaphoreSlot(semaphoreKey: string, leaseId: string, ttl: number): Promise<boolean>;
+  /** Polling interval for leader election checks (default: 5000ms) */
+  pollIntervalMs?: number;
 }

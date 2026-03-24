@@ -1,48 +1,46 @@
-import {
-  Backend,
-  RedisBackendConfig,
-  MongoBackendConfig,
-  PostgresBackendConfig
-} from '../interfaces';
+import { StorageAdapter, BackendType } from '../interfaces';
 
-export class RedisBackend implements Backend {
-  constructor(config: RedisBackendConfig) {
+export class RedisStorageAdapter implements StorageAdapter {
+  public type: BackendType = 'redis';
+
+  constructor(private connectionOptions: any) {
     // Stub implementation
   }
 
-  public async init(): Promise<void> {}
-  public async acquireLock(key: string, owner: string, ttl: number): Promise<boolean> { return false; }
-  public async extendLock(key: string, owner: string, ttl: number): Promise<boolean> { return false; }
-  public async releaseLock(key: string, owner: string): Promise<boolean> { return false; }
-  public async acquireSemaphoreSlot(semaphoreKey: string, leaseId: string, max: number, ttl: number): Promise<boolean> { return false; }
-  public async releaseSemaphoreSlot(semaphoreKey: string, leaseId: string): Promise<boolean> { return false; }
-  public async renewSemaphoreSlot(semaphoreKey: string, leaseId: string, ttl: number): Promise<boolean> { return false; }
+  public async acquireLeaderLock(ttlMs: number): Promise<boolean> { return false; }
+  public async renewLeaderLock(): Promise<boolean> { return false; }
+  public async releaseLeaderLock(): Promise<void> {}
+
+  public async acquireSemaphorePermit(globalLimit: number): Promise<boolean> { return false; }
+  public async releaseSemaphorePermit(): Promise<void> {}
 }
 
-export class MongoBackend implements Backend {
-  constructor(config: MongoBackendConfig) {
+export class MongoStorageAdapter implements StorageAdapter {
+  public type: BackendType = 'mongodb';
+
+  constructor(private connectionString: string) {
     // Stub implementation
   }
 
-  public async init(): Promise<void> {}
-  public async acquireLock(key: string, owner: string, ttl: number): Promise<boolean> { return false; }
-  public async extendLock(key: string, owner: string, ttl: number): Promise<boolean> { return false; }
-  public async releaseLock(key: string, owner: string): Promise<boolean> { return false; }
-  public async acquireSemaphoreSlot(semaphoreKey: string, leaseId: string, max: number, ttl: number): Promise<boolean> { return false; }
-  public async releaseSemaphoreSlot(semaphoreKey: string, leaseId: string): Promise<boolean> { return false; }
-  public async renewSemaphoreSlot(semaphoreKey: string, leaseId: string, ttl: number): Promise<boolean> { return false; }
+  public async acquireLeaderLock(ttlMs: number): Promise<boolean> { return false; }
+  public async renewLeaderLock(): Promise<boolean> { return false; }
+  public async releaseLeaderLock(): Promise<void> {}
+
+  public async acquireSemaphorePermit(globalLimit: number): Promise<boolean> { return false; }
+  public async releaseSemaphorePermit(): Promise<void> {}
 }
 
-export class PostgresBackend implements Backend {
-  constructor(config: PostgresBackendConfig) {
+export class PostgresStorageAdapter implements StorageAdapter {
+  public type: BackendType = 'postgresql';
+
+  constructor(private connectionString: string) {
     // Stub implementation
   }
 
-  public async init(): Promise<void> {}
-  public async acquireLock(key: string, owner: string, ttl: number): Promise<boolean> { return false; }
-  public async extendLock(key: string, owner: string, ttl: number): Promise<boolean> { return false; }
-  public async releaseLock(key: string, owner: string): Promise<boolean> { return false; }
-  public async acquireSemaphoreSlot(semaphoreKey: string, leaseId: string, max: number, ttl: number): Promise<boolean> { return false; }
-  public async releaseSemaphoreSlot(semaphoreKey: string, leaseId: string): Promise<boolean> { return false; }
-  public async renewSemaphoreSlot(semaphoreKey: string, leaseId: string, ttl: number): Promise<boolean> { return false; }
+  public async acquireLeaderLock(ttlMs: number): Promise<boolean> { return false; }
+  public async renewLeaderLock(): Promise<boolean> { return false; }
+  public async releaseLeaderLock(): Promise<void> {}
+
+  public async acquireSemaphorePermit(globalLimit: number): Promise<boolean> { return false; }
+  public async releaseSemaphorePermit(): Promise<void> {}
 }
