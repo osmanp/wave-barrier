@@ -1,0 +1,42 @@
+{
+  "name": "wave-barrier",
+  "version": "0.1.0",
+  "description": "Distributed job coordination for Node.js clusters with identical nodes, dynamic leader election, and semaphore-based concurrency control.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osmanp/wave-barrier.git"
+  },
+  "keywords": [
+    "distributed",
+    "coordination",
+    "leader-election",
+    "semaphore",
+    "concurrency",
+    "redis",
+    "mongodb",
+    "postgresql",
+    "bullmq",
+    "agenda",
+    "pg-boss"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/osmanp/wave-barrier/issues"
+  },
+  "homepage": "https://github.com/osmanp/wave-barrier#readme",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "agenda": "^6.2.3"
+  }
+}
